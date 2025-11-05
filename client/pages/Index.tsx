@@ -23,7 +23,7 @@ export default function Index() {
         <Survey />
 
         <footer className="mt-10 md:mt-14 text-center text-white/50 text-xs md:text-sm">
-          © {new Date().getFullYear()} PopMatch · Für Handy & Laptop optimiert
+          © 2025 von Victor und Pit 5C2 LRSL
         </footer>
       </section>
     </main>
