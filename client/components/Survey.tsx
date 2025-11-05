@@ -53,6 +53,7 @@ export default function Survey() {
     Array.from({ length: QUESTIONS.length }, () => null),
   );
   const [result, setResult] = useState<ArtistKey | null>(null);
+  const [showStats, setShowStats] = useState(false);
 
   const allAnswered = useMemo(
     () => answers.every((a) => a !== null),
@@ -104,6 +105,7 @@ export default function Survey() {
   const reset = () => {
     setAnswers(Array.from({ length: QUESTIONS.length }, () => null));
     setResult(null);
+    setShowStats(false);
   };
 
   if (result) {
@@ -118,8 +120,19 @@ export default function Survey() {
             <Button variant="brand" size="lg" onClick={reset}>
               Erneut versuchen
             </Button>
+            <Button variant="brand" size="lg" onClick={() => setShowStats((s) => !s)}>
+              Statistiken ansehen
+            </Button>
           </div>
         </div>
+
+        {showStats && (
+          <div className="mt-6 w-full max-w-2xl mx-auto">
+            <div className="rounded-2xl bg-white/4 p-5 border border-white/8">
+              <Stats />
+            </div>
+          </div>
+        )}
       </div>
     );
   }
