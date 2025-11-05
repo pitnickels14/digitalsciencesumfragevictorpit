@@ -44,7 +44,10 @@ const QUESTIONS: Question[] = [
     prompt: "Welchen Sound bevorzugst du?",
     options: [
       { label: "Pop mit großem Refrain", weights: { taylor: 2 } },
-      { label: "Polierter Pop & erwachsene Themen", weights: { sabrina: 2, taylor: 1 } },
+      {
+        label: "Polierter Pop & erwachsene Themen",
+        weights: { sabrina: 2, taylor: 1 },
+      },
       { label: "Elektronisch & experimentell", weights: { billie: 2 } },
       { label: "Synthwave & R&B", weights: { weeknd: 2 } },
     ],
