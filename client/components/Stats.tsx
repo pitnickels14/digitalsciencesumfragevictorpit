@@ -5,27 +5,28 @@ export default function Stats({ className }: { className?: string }) {
   const [data, setData] = useState<Record<ArtistKey, number> | null>(null);
 
   useEffect(() => {
-    const raw = localStorage.getItem("popmatch_survey");
-    if (!raw) {
-      setData({ taylor: 0, sabrina: 0, billie: 0, weeknd: 0 });
-      return;
-    }
-    try {
-      const arr = JSON.parse(raw) as any[];
-      const counts: Record<ArtistKey, number> = {
-        taylor: 0,
-        sabrina: 0,
-        billie: 0,
-        weeknd: 0,
-      };
-      arr.forEach((entry) => {
-        const w = entry.winner as ArtistKey | undefined;
-        if (w && counts[w] !== undefined) counts[w] += 1;
-      });
-      setData(counts);
-    } catch (e) {
-      setData({ taylor: 0, sabrina: 0, billie: 0, weeknd: 0 });
-    }
+    let mounted = true;
+    const fetchStats = async () => {
+      try {
+        const res = await fetch("/api/stats");
+        if (!res.ok) throw new Error("failed");
+        const json = await res.json();
+        const counts = json.counts ?? {};
+        const normalized: Record<ArtistKey, number> = {
+          taylor: counts.taylor ?? 0,
+          sabrina: counts.sabrina ?? 0,
+          billie: counts.billie ?? 0,
+          weeknd: counts.weeknd ?? 0,
+        };
+        if (mounted) setData(normalized);
+      } catch (e) {
+        if (mounted) setData({ taylor: 0, sabrina: 0, billie: 0, weeknd: 0 });
+      }
+    };
+    fetchStats();
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const total = useMemo(() => {
