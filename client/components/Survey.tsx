@@ -22,8 +22,8 @@ const QUESTIONS: Question[] = [
     options: [
       { label: "Episch & euphorisch", weights: { taylor: 2, weeknd: 1 } },
       {
-        label: "Herzschmerz & Coming-of-Age",
-        weights: { olivia: 2, taylor: 1 },
+        label: "Melancholisch & erwachsen",
+        weights: { sabrina: 2, taylor: 1 },
       },
       { label: "Düster & intim", weights: { billie: 2 } },
       { label: "Nachtfahrt & Club-Vibes", weights: { weeknd: 2, billie: 1 } },
@@ -34,7 +34,7 @@ const QUESTIONS: Question[] = [
     prompt: "Welche Lyrics sprechen dich an?",
     options: [
       { label: "Wortgewandt & clever", weights: { taylor: 2 } },
-      { label: "Direkt & emotional", weights: { olivia: 2 } },
+      { label: "Direkt & persönlich", weights: { sabrina: 2 } },
       { label: "Minimalistisch & poetisch", weights: { billie: 2 } },
       { label: "Mysteriös & verführerisch", weights: { weeknd: 2 } },
     ],
@@ -44,7 +44,7 @@ const QUESTIONS: Question[] = [
     prompt: "Welchen Sound bevorzugst du?",
     options: [
       { label: "Pop mit großem Refrain", weights: { taylor: 2 } },
-      { label: "Pop-Rock & Y2K-Vibes", weights: { olivia: 2, taylor: 1 } },
+      { label: "Polierter Pop & erwachsene Themen", weights: { sabrina: 2, taylor: 1 } },
       { label: "Elektronisch & experimentell", weights: { billie: 2 } },
       { label: "Synthwave & R&B", weights: { weeknd: 2 } },
     ],
@@ -72,7 +72,7 @@ export default function Survey() {
   const compute = () => {
     const scores: Record<ArtistKey, number> = {
       taylor: 0,
-      olivia: 0,
+      sabrina: 0,
       billie: 0,
       weeknd: 0,
     };
