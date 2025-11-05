@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
+import { handleGetStats, handlePostResult, handleDeleteStats } from "./routes/stats";
 
 export function createServer() {
   const app = express();
@@ -20,7 +21,6 @@ export function createServer() {
   app.get("/api/demo", handleDemo);
 
   // Stats endpoints for SQLite-backed storage
-  const { handleGetStats, handlePostResult, handleDeleteStats } = await import("./routes/stats");
   app.get("/api/stats", handleGetStats);
   app.post("/api/stats", handlePostResult);
   app.delete("/api/stats", handleDeleteStats);
