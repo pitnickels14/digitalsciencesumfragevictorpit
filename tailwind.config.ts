@@ -57,6 +57,16 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        brand: {
+          start: "#001F3F",
+          end: "#003366",
+        },
+      },
+      backgroundImage: {
+        "brand-gradient": "linear-gradient(135deg, #001F3F 0%, #003366 100%)",
+      },
+      boxShadow: {
+        glow: "0 0 35px rgba(255,255,255,0.15)",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -84,6 +94,9 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      fontFamily: {
+        sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
       },
     },
   },
