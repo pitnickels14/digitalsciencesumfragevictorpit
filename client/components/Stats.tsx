@@ -73,8 +73,10 @@ export default function Stats({ className }: { className?: string }) {
       <div className="mt-5 text-right">
         <button
           className="text-xs text-white/70 underline"
-          onClick={() => {
-            localStorage.removeItem("popmatch_survey");
+          onClick={async () => {
+            try {
+              await fetch("/api/stats", { method: "DELETE" });
+            } catch {}
             setData({ taylor: 0, sabrina: 0, billie: 0, weeknd: 0 });
           }}
         >
