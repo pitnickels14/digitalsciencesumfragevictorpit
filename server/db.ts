@@ -22,14 +22,28 @@ db.exec(`
   )
 `);
 
-export function insertResult(ts: number, winner: string, scores: Record<string, number>, payload: any) {
-  const stmt = db.prepare("INSERT INTO results (ts, winner, scores, payload) VALUES (?, ?, ?, ?)");
-  const info = stmt.run(ts, winner, JSON.stringify(scores), JSON.stringify(payload));
+export function insertResult(
+  ts: number,
+  winner: string,
+  scores: Record<string, number>,
+  payload: any,
+) {
+  const stmt = db.prepare(
+    "INSERT INTO results (ts, winner, scores, payload) VALUES (?, ?, ?, ?)",
+  );
+  const info = stmt.run(
+    ts,
+    winner,
+    JSON.stringify(scores),
+    JSON.stringify(payload),
+  );
   return info.lastInsertRowid;
 }
 
 export function getCounts() {
-  const stmt = db.prepare("SELECT winner, COUNT(*) as cnt FROM results GROUP BY winner");
+  const stmt = db.prepare(
+    "SELECT winner, COUNT(*) as cnt FROM results GROUP BY winner",
+  );
   const rows = stmt.all();
   const counts: Record<string, number> = {};
   rows.forEach((r: any) => {

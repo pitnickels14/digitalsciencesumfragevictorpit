@@ -14,8 +14,14 @@ export const handleGetStats: RequestHandler = (_req, res) => {
 export const handlePostResult: RequestHandler = (req, res) => {
   try {
     const { ts, winner, scores, payload } = req.body as any;
-    if (!winner || !ts) return res.status(400).json({ error: "Missing fields" });
-    const id = insertResult(Number(ts), String(winner), scores ?? {}, payload ?? null);
+    if (!winner || !ts)
+      return res.status(400).json({ error: "Missing fields" });
+    const id = insertResult(
+      Number(ts),
+      String(winner),
+      scores ?? {},
+      payload ?? null,
+    );
     res.status(201).json({ id });
   } catch (e) {
     console.error(e);
