@@ -7,14 +7,14 @@ export default function Stats({ className }: { className?: string }) {
   useEffect(() => {
     const raw = localStorage.getItem("popmatch_survey");
     if (!raw) {
-      setData({ taylor: 0, olivia: 0, billie: 0, weeknd: 0 });
+      setData({ taylor: 0, sabrina: 0, billie: 0, weeknd: 0 });
       return;
     }
     try {
       const arr = JSON.parse(raw) as any[];
       const counts: Record<ArtistKey, number> = {
         taylor: 0,
-        olivia: 0,
+        sabrina: 0,
         billie: 0,
         weeknd: 0,
       };
@@ -24,7 +24,7 @@ export default function Stats({ className }: { className?: string }) {
       });
       setData(counts);
     } catch (e) {
-      setData({ taylor: 0, olivia: 0, billie: 0, weeknd: 0 });
+      setData({ taylor: 0, sabrina: 0, billie: 0, weeknd: 0 });
     }
   }, []);
 
@@ -74,7 +74,7 @@ export default function Stats({ className }: { className?: string }) {
           className="text-xs text-white/70 underline"
           onClick={() => {
             localStorage.removeItem("popmatch_survey");
-            setData({ taylor: 0, olivia: 0, billie: 0, weeknd: 0 });
+            setData({ taylor: 0, sabrina: 0, billie: 0, weeknd: 0 });
           }}
         >
           Statistiken zurücksetzen
