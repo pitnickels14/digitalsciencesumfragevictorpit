@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ARTIST_INFO } from "./Survey";
-
-type ArtistKey = "taylor" | "olivia" | "billie" | "weeknd";
+import { ARTIST_INFO, type ArtistKey } from "@/data/artists";
 
 export default function Stats({ className }: { className?: string }) {
   const [data, setData] = useState<Record<ArtistKey, number> | null>(null);
