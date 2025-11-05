@@ -49,14 +49,21 @@ export default function Stats({ className }: { className?: string }) {
           const width = Math.round((count / max) * 100);
           return (
             <div key={k} className="flex items-center gap-4">
-              <div className="w-36 text-sm text-white/90">{ARTIST_INFO[k].name}</div>
+              <div className="w-36 text-sm text-white/90">
+                {ARTIST_INFO[k].name}
+              </div>
               <div className="flex-1 bg-white/5 rounded-full h-6 overflow-hidden">
                 <div
                   className="h-6 bg-white/20 rounded-full transition-all"
-                  style={{ width: `${width}%`, boxShadow: "0 6px 24px rgba(255,255,255,0.06)" }}
+                  style={{
+                    width: `${width}%`,
+                    boxShadow: "0 6px 24px rgba(255,255,255,0.06)",
+                  }}
                 />
               </div>
-              <div className="w-16 text-right text-sm text-white/80">{count} ({pct}%)</div>
+              <div className="w-16 text-right text-sm text-white/80">
+                {count} ({pct}%)
+              </div>
             </div>
           );
         })}

@@ -21,7 +21,10 @@ const QUESTIONS: Question[] = [
     prompt: "Welche Stimmung hörst du am liebsten?",
     options: [
       { label: "Episch & euphorisch", weights: { taylor: 2, weeknd: 1 } },
-      { label: "Herzschmerz & Coming-of-Age", weights: { olivia: 2, taylor: 1 } },
+      {
+        label: "Herzschmerz & Coming-of-Age",
+        weights: { olivia: 2, taylor: 1 },
+      },
       { label: "Düster & intim", weights: { billie: 2 } },
       { label: "Nachtfahrt & Club-Vibes", weights: { weeknd: 2, billie: 1 } },
     ],
@@ -113,14 +116,24 @@ export default function Survey() {
     return (
       <div className="w-full max-w-2xl mx-auto text-center">
         <div className="rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 p-6 md:p-8 text-white shadow-[0_0_40px_rgba(255,255,255,0.08)]">
-          <p className="uppercase tracking-widest text-xs md:text-sm text-white/60 mb-2">Deine Empfehlung</p>
-          <h2 className="text-3xl md:text-4xl font-extrabold mb-3">{info.name}</h2>
-          <p className="text-white/85 mb-6 md:mb-8 leading-relaxed">{info.desc}</p>
+          <p className="uppercase tracking-widest text-xs md:text-sm text-white/60 mb-2">
+            Deine Empfehlung
+          </p>
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-3">
+            {info.name}
+          </h2>
+          <p className="text-white/85 mb-6 md:mb-8 leading-relaxed">
+            {info.desc}
+          </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Button variant="brand" size="lg" onClick={reset}>
               Erneut versuchen
             </Button>
-            <Button variant="brand" size="lg" onClick={() => setShowStats((s) => !s)}>
+            <Button
+              variant="brand"
+              size="lg"
+              onClick={() => setShowStats((s) => !s)}
+            >
               Statistiken ansehen
             </Button>
           </div>
@@ -141,14 +154,20 @@ export default function Survey() {
     <div className="w-full max-w-3xl mx-auto">
       <div className="rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 p-6 md:p-8 text-white shadow-[0_0_40px_rgba(255,255,255,0.08)]">
         <div className="mb-6 md:mb-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-extrabold">Welcher Pop-Act passt zu dir?</h2>
-          <p className="text-white/70 mt-2">Beantworte 3 Fragen und erhalte eine persönliche Empfehlung.</p>
+          <h2 className="text-3xl md:text-4xl font-extrabold">
+            Welcher Pop-Act passt zu dir?
+          </h2>
+          <p className="text-white/70 mt-2">
+            Beantworte 3 Fragen und erhalte eine persönliche Empfehlung.
+          </p>
         </div>
 
         <ol className="space-y-6 md:space-y-8">
           {QUESTIONS.map((q, qIdx) => (
             <li key={q.id}>
-              <h3 className="font-semibold mb-3 md:mb-4 text-lg md:text-xl">{qIdx + 1}. {q.prompt}</h3>
+              <h3 className="font-semibold mb-3 md:mb-4 text-lg md:text-xl">
+                {qIdx + 1}. {q.prompt}
+              </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
                 {q.options.map((opt, optIdx) => {
                   const selected = answers[qIdx] === optIdx;
@@ -160,7 +179,8 @@ export default function Survey() {
                         "group relative w-full rounded-xl border border-white/10 px-4 py-3 md:px-5 md:py-4 text-left transition-all",
                         "bg-white/0 hover:bg-white/5 focus-visible:outline-none",
                         "text-white/90 hover:text-white",
-                        selected && "bg-white/10 border-white/20 shadow-[0_0_25px_rgba(255,255,255,0.12)]",
+                        selected &&
+                          "bg-white/10 border-white/20 shadow-[0_0_25px_rgba(255,255,255,0.12)]",
                       )}
                     >
                       <span className="absolute inset-0 rounded-xl ring-0 group-hover:ring-1 ring-white/30 transition" />

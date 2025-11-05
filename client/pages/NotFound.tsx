@@ -17,7 +17,10 @@ const NotFound = () => {
       <div className="text-center p-8 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10">
         <h1 className="text-5xl font-extrabold mb-3">404</h1>
         <p className="text-white/80 mb-6">Seite nicht gefunden</p>
-        <Link to="/" className="inline-block rounded-full bg-white/10 border border-white/20 px-6 py-3 hover:bg-white/20 transition">
+        <Link
+          to="/"
+          className="inline-block rounded-full bg-white/10 border border-white/20 px-6 py-3 hover:bg-white/20 transition"
+        >
           Zur Startseite
         </Link>
       </div>
