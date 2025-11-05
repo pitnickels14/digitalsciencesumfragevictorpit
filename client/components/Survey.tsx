@@ -99,10 +99,21 @@ export default function Survey() {
         scores,
         winner,
       };
-      const prevRaw = localStorage.getItem("popmatch_survey");
-      const prev = prevRaw ? JSON.parse(prevRaw) : [];
-      prev.push(payload);
-      localStorage.setItem("popmatch_survey", JSON.stringify(prev));
+
+      // localStorage fallback
+      try {
+        const prevRaw = localStorage.getItem("popmatch_survey");
+        const prev = prevRaw ? JSON.parse(prevRaw) : [];
+        prev.push(payload);
+        localStorage.setItem("popmatch_survey", JSON.stringify(prev));
+      } catch {}
+
+      // send to server
+      fetch("/api/stats", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }).catch(() => {});
     } catch {}
 
     setResult(winner);
