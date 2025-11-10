@@ -31,16 +31,16 @@ export async function getCountsSupabase() {
   const s = init();
   if (!s) return null;
   try {
-    // Use SQL to aggregate
-    const { data, error } = await s
-      .from('results')
-      .select('winner, count', { count: 'exact' })
-      .select('winner');
-    // Fallback: simple RPC
-    // Instead, run a SQL query via rpc if available
-    const resp = await s.rpc('get_winner_counts');
-    if (resp && resp.error) throw resp.error;
-    return resp?.data ?? null;
+    // Fetch winners and aggregate client-side
+    const { data, error } = await s.from('results').select('winner');
+    if (error) throw error;
+    const counts: Record<string, number> = {};
+    (data || []).forEach((row: any) => {
+      const w = row.winner;
+      if (!w) return;
+      counts[w] = (counts[w] || 0) + 1;
+    });
+    return counts;
   } catch (e) {
     console.error('Supabase counts error', e);
     return null;
