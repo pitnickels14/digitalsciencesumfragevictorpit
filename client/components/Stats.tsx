@@ -8,6 +8,33 @@ export default function Stats({ className }: { className?: string }) {
     let mounted = true;
     const fetchStats = async () => {
       try {
+        // Try Supabase first
+        const supa = await import("@/lib/supabase").catch(() => null);
+        if (supa && typeof supa.getCountsSupabase === "function") {
+          const resp = await supa.getCountsSupabase();
+          if (resp) {
+            // resp might be an array of { winner, cnt }
+            const normalized: Record<ArtistKey, number> = {
+              taylor: 0,
+              sabrina: 0,
+              billie: 0,
+              weeknd: 0,
+            };
+            if (Array.isArray(resp)) {
+              resp.forEach((r: any) => {
+                if (r.winner && normalized[r.winner] !== undefined) normalized[r.winner] = Number(r.cnt ?? r.count ?? 0);
+              });
+            } else if (typeof resp === 'object') {
+              Object.entries(resp).forEach(([k, v]) => {
+                if ((normalized as any)[k] !== undefined) (normalized as any)[k] = Number(v ?? 0);
+              });
+            }
+            if (mounted) setData(normalized);
+            return;
+          }
+        }
+
+        // Fallback to API
         const res = await fetch("/api/stats");
         if (!res.ok) throw new Error("failed");
         const json = await res.json();
