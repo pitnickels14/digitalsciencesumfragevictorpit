@@ -6,7 +6,7 @@ const connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {
   console.warn(
-    "DATABASE_URL not set. Stats will not be persisted. Set DATABASE_URL environment variable."
+    "DATABASE_URL not set. Stats will not be persisted. Set DATABASE_URL environment variable.",
   );
 }
 
@@ -53,7 +53,7 @@ export async function insertResult(
   ts: number,
   winner: string,
   scores: Record<string, number>,
-  payload: any
+  payload: any,
 ) {
   const currentPool = getPool();
   if (!currentPool) return null;
@@ -62,7 +62,7 @@ export async function insertResult(
     await initDbIfNeeded();
     const result = await currentPool.query(
       "INSERT INTO results (ts, winner, scores, payload) VALUES ($1, $2, $3, $4) RETURNING id",
-      [ts, winner, JSON.stringify(scores), JSON.stringify(payload)]
+      [ts, winner, JSON.stringify(scores), JSON.stringify(payload)],
     );
     return result.rows[0].id;
   } catch (e) {
@@ -78,7 +78,7 @@ export async function getCounts(): Promise<Record<string, number>> {
   try {
     await initDbIfNeeded();
     const result = await currentPool.query(
-      "SELECT winner, COUNT(*) as cnt FROM results GROUP BY winner"
+      "SELECT winner, COUNT(*) as cnt FROM results GROUP BY winner",
     );
     const counts: Record<string, number> = {};
     result.rows.forEach((r) => {
