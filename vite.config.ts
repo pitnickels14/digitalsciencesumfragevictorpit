@@ -11,12 +11,16 @@ export default defineConfig(({ command }) => {
     plugins.push({
       name: "express-plugin",
       configureServer(server) {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const { createServer } = require("./server/index.ts");
-        const app = createServer();
-
-        // Add Express app as middleware to Vite dev server
-        server.middlewares.use(app);
+        // Use dynamic import with fallback
+        (async () => {
+          try {
+            const mod = await import("./server/index.js");
+            const app = mod.createServer();
+            server.middlewares.use(app);
+          } catch (e) {
+            console.warn("Could not load server:", e);
+          }
+        })();
       },
     } as Plugin);
   }
