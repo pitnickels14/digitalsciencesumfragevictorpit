@@ -16,11 +16,11 @@ export default function Stats({ className }: { className?: string }) {
           taylor: counts.taylor ?? 0,
           sabrina: counts.sabrina ?? 0,
           billie: counts.billie ?? 0,
-          weeknd: counts.weeknd ?? 0,
+          laufey: counts.laufey ?? 0,
         };
         if (mounted) setData(normalized);
       } catch (e) {
-        if (mounted) setData({ taylor: 0, sabrina: 0, billie: 0, weeknd: 0 });
+        if (mounted) setData({ taylor: 0, sabrina: 0, billie: 0, laufey: 0 });
       }
     };
     fetchStats();
@@ -77,7 +77,7 @@ export default function Stats({ className }: { className?: string }) {
             try {
               await fetch("/api/stats", { method: "DELETE" });
             } catch {}
-            setData({ taylor: 0, sabrina: 0, billie: 0, weeknd: 0 });
+            setData({ taylor: 0, sabrina: 0, billie: 0, laufey: 0 });
           }}
         >
           Statistiken zurücksetzen
