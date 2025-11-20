@@ -11,24 +11,11 @@ export default defineConfig({
       allow: ["./client", "./shared"],
       deny: [".env", ".env.*", "*.{crt,pem}", "**/.git/**", "server/**"],
     },
-    middlewareMode: false,
   },
   build: {
     outDir: "dist/spa",
   },
-  plugins: [
-    react(),
-    {
-      name: "express-plugin",
-      apply: "serve",
-      async configureServer(server) {
-        // Lazy load server only in dev mode
-        const { createServer } = await import("./server/index.js");
-        const app = createServer();
-        server.middlewares.use(app);
-      },
-    },
-  ],
+  plugins: [react()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./client"),
