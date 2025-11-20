@@ -1,75 +1,91 @@
-import Database from "better-sqlite3";
 import path from "path";
 import fs from "fs";
 
-const DB_DIR = path.join(process.cwd(), "server", "data");
-const DB_FILE = path.join(DB_DIR, "popmatch.db");
+const DATA_DIR = path.join(process.cwd(), "server", "data");
+const STATS_FILE = path.join(DATA_DIR, "stats.json");
 
-if (!fs.existsSync(DB_DIR)) {
-  fs.mkdirSync(DB_DIR, { recursive: true });
+if (!fs.existsSync(DATA_DIR)) {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
 }
 
-let db: any = null;
-let initialized = false;
+interface Result {
+  id: number;
+  ts: number;
+  winner: string;
+  scores: Record<string, number>;
+  payload?: any;
+}
 
-function initDbIfNeeded() {
-  if (initialized && db) return;
-  initialized = true;
+interface StatsData {
+  results: Result[];
+  nextId: number;
+}
 
-  // Lazy require to avoid loading native bindings during Vite config parsing
-  let Database: any;
+function loadStats(): StatsData {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    Database = require("better-sqlite3");
+    if (fs.existsSync(STATS_FILE)) {
+      const content = fs.readFileSync(STATS_FILE, "utf-8");
+      return JSON.parse(content);
+    }
   } catch (e) {
-    // If better-sqlite3 is not installed, keep db as null — callers should handle nulls
-    console.warn("better-sqlite3 not available, DB features disabled");
-    db = null;
-    return;
+    console.error("Error loading stats:", e);
   }
-
-  db = new Database(DB_FILE);
-
-  // Initialize table
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS results (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      ts INTEGER NOT NULL,
-      winner TEXT NOT NULL,
-      scores TEXT NOT NULL,
-      payload TEXT
-    )
-  `);
+  return { results: [], nextId: 1 };
 }
 
-export function insertResult(ts: number, winner: string, scores: Record<string, number>, payload: any) {
-  initDbIfNeeded();
-  if (!db) return null;
-  const stmt = db.prepare("INSERT INTO results (ts, winner, scores, payload) VALUES (?, ?, ?, ?)");
-  const info = stmt.run(ts, winner, JSON.stringify(scores), JSON.stringify(payload));
-  return info.lastInsertRowid;
+function saveStats(data: StatsData) {
+  try {
+    fs.writeFileSync(STATS_FILE, JSON.stringify(data, null, 2), "utf-8");
+  } catch (e) {
+    console.error("Error saving stats:", e);
+    throw e;
+  }
 }
 
-export function getCounts() {
-  initDbIfNeeded();
-  if (!db) return {};
-  const stmt = db.prepare("SELECT winner, COUNT(*) as cnt FROM results GROUP BY winner");
-  const rows = stmt.all();
-  const counts: Record<string, number> = {};
-  rows.forEach((r: any) => {
-    counts[r.winner] = r.cnt;
+export function insertResult(
+  ts: number,
+  winner: string,
+  scores: Record<string, number>,
+  payload: any,
+) {
+  const data = loadStats();
+  const id = data.nextId++;
+
+  data.results.push({
+    id,
+    ts,
+    winner,
+    scores,
+    payload,
   });
+
+  saveStats(data);
+  return id;
+}
+
+export function getCounts(): Record<string, number> {
+  const data = loadStats();
+  const counts: Record<string, number> = {};
+
+  data.results.forEach((result) => {
+    if (!counts[result.winner]) {
+      counts[result.winner] = 0;
+    }
+    counts[result.winner]++;
+  });
+
   return counts;
 }
 
-export function clearResults() {
-  initDbIfNeeded();
-  if (!db) return 0;
-  const stmt = db.prepare("DELETE FROM results");
-  const info = stmt.run();
-  return info.changes;
+export function clearResults(): number {
+  const data = loadStats();
+  const count = data.results.length;
+  const newData: StatsData = { results: [], nextId: data.nextId };
+  saveStats(newData);
+  return count;
 }
 
 export default {
-  initDbIfNeeded,
+  loadStats,
+  saveStats,
 };
