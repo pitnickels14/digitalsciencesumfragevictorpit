@@ -23,7 +23,19 @@
         "laufey": 2
       },
       "payload": null
+    },
+    {
+      "id": 5,
+      "ts": 1763654544468,
+      "winner": "sabrina",
+      "scores": {
+        "taylor": 0,
+        "sabrina": 6,
+        "billie": 1,
+        "laufey": 0
+      },
+      "payload": null
     }
   ],
-  "nextId": 5
+  "nextId": 6
 }
