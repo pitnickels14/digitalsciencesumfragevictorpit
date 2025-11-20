@@ -11,7 +11,19 @@
         "weeknd": 1
       },
       "payload": null
+    },
+    {
+      "id": 4,
+      "ts": 1763654290090,
+      "winner": "billie",
+      "scores": {
+        "taylor": 2,
+        "sabrina": 0,
+        "billie": 3,
+        "laufey": 2
+      },
+      "payload": null
     }
   ],
-  "nextId": 4
+  "nextId": 5
 }
