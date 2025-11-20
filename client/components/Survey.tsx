@@ -72,7 +72,7 @@ export default function Survey() {
     setAnswers(next);
   };
 
-  const compute = () => {
+  const compute = async () => {
     const scores: Record<ArtistKey, number> = {
       taylor: 0,
       sabrina: 0,
