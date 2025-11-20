@@ -1,91 +1,110 @@
-import path from "path";
-import fs from "fs";
+import pg from "pg";
 
-const DATA_DIR = path.join(process.cwd(), "server", "data");
-const STATS_FILE = path.join(DATA_DIR, "stats.json");
+const { Pool } = pg;
 
-if (!fs.existsSync(DATA_DIR)) {
-  fs.mkdirSync(DATA_DIR, { recursive: true });
+const connectionString = process.env.DATABASE_URL;
+
+if (!connectionString) {
+  console.warn(
+    "DATABASE_URL not set. Stats will not be persisted. Set DATABASE_URL environment variable."
+  );
 }
 
-interface Result {
-  id: number;
-  ts: number;
-  winner: string;
-  scores: Record<string, number>;
-  payload?: any;
+let pool: pg.Pool | null = null;
+
+function getPool() {
+  if (!connectionString) return null;
+  if (!pool) {
+    pool = new Pool({
+      connectionString,
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    });
+  }
+  return pool;
 }
 
-interface StatsData {
-  results: Result[];
-  nextId: number;
-}
+async function initDbIfNeeded() {
+  const currentPool = getPool();
+  if (!currentPool) return;
 
-function loadStats(): StatsData {
   try {
-    if (fs.existsSync(STATS_FILE)) {
-      const content = fs.readFileSync(STATS_FILE, "utf-8");
-      return JSON.parse(content);
+    const client = await currentPool.connect();
+    try {
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS results (
+          id SERIAL PRIMARY KEY,
+          ts BIGINT NOT NULL,
+          winner VARCHAR(255) NOT NULL,
+          scores JSONB NOT NULL,
+          payload JSONB
+        )
+      `);
+    } finally {
+      client.release();
     }
   } catch (e) {
-    console.error("Error loading stats:", e);
-  }
-  return { results: [], nextId: 1 };
-}
-
-function saveStats(data: StatsData) {
-  try {
-    fs.writeFileSync(STATS_FILE, JSON.stringify(data, null, 2), "utf-8");
-  } catch (e) {
-    console.error("Error saving stats:", e);
-    throw e;
+    console.error("Error initializing DB:", e);
   }
 }
 
-export function insertResult(
+export async function insertResult(
   ts: number,
   winner: string,
   scores: Record<string, number>,
-  payload: any,
+  payload: any
 ) {
-  const data = loadStats();
-  const id = data.nextId++;
+  const currentPool = getPool();
+  if (!currentPool) return null;
 
-  data.results.push({
-    id,
-    ts,
-    winner,
-    scores,
-    payload,
-  });
-
-  saveStats(data);
-  return id;
+  try {
+    await initDbIfNeeded();
+    const result = await currentPool.query(
+      "INSERT INTO results (ts, winner, scores, payload) VALUES ($1, $2, $3, $4) RETURNING id",
+      [ts, winner, JSON.stringify(scores), JSON.stringify(payload)]
+    );
+    return result.rows[0].id;
+  } catch (e) {
+    console.error("Error inserting result:", e);
+    return null;
+  }
 }
 
-export function getCounts(): Record<string, number> {
-  const data = loadStats();
-  const counts: Record<string, number> = {};
+export async function getCounts(): Promise<Record<string, number>> {
+  const currentPool = getPool();
+  if (!currentPool) return {};
 
-  data.results.forEach((result) => {
-    if (!counts[result.winner]) {
-      counts[result.winner] = 0;
-    }
-    counts[result.winner]++;
-  });
-
-  return counts;
+  try {
+    await initDbIfNeeded();
+    const result = await currentPool.query(
+      "SELECT winner, COUNT(*) as cnt FROM results GROUP BY winner"
+    );
+    const counts: Record<string, number> = {};
+    result.rows.forEach((r) => {
+      counts[r.winner] = Number(r.cnt);
+    });
+    return counts;
+  } catch (e) {
+    console.error("Error getting counts:", e);
+    return {};
+  }
 }
 
-export function clearResults(): number {
-  const data = loadStats();
-  const count = data.results.length;
-  const newData: StatsData = { results: [], nextId: data.nextId };
-  saveStats(newData);
-  return count;
+export async function clearResults(): Promise<number> {
+  const currentPool = getPool();
+  if (!currentPool) return 0;
+
+  try {
+    await initDbIfNeeded();
+    const result = await currentPool.query("DELETE FROM results");
+    return result.rowCount || 0;
+  } catch (e) {
+    console.error("Error clearing results:", e);
+    return 0;
+  }
 }
 
 export default {
-  loadStats,
-  saveStats,
+  initDbIfNeeded,
 };
