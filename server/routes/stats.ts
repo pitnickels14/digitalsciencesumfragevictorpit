@@ -1,9 +1,9 @@
 import { RequestHandler } from "express";
 import { insertResult, getCounts, clearResults } from "../db";
 
-export const handleGetStats: RequestHandler = (_req, res) => {
+export const handleGetStats: RequestHandler = async (_req, res) => {
   try {
-    const counts = getCounts();
+    const counts = await getCounts();
     res.status(200).json({ counts });
   } catch (e) {
     console.error(e);
@@ -11,12 +11,12 @@ export const handleGetStats: RequestHandler = (_req, res) => {
   }
 };
 
-export const handlePostResult: RequestHandler = (req, res) => {
+export const handlePostResult: RequestHandler = async (req, res) => {
   try {
     const { ts, winner, scores, payload } = req.body as any;
     if (!winner || !ts)
       return res.status(400).json({ error: "Missing fields" });
-    const id = insertResult(
+    const id = await insertResult(
       Number(ts),
       String(winner),
       scores ?? {},
@@ -29,9 +29,9 @@ export const handlePostResult: RequestHandler = (req, res) => {
   }
 };
 
-export const handleDeleteStats: RequestHandler = (_req, res) => {
+export const handleDeleteStats: RequestHandler = async (_req, res) => {
   try {
-    const changes = clearResults();
+    const changes = await clearResults();
     res.status(200).json({ deleted: changes });
   } catch (e) {
     console.error(e);
