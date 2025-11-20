@@ -100,36 +100,12 @@ export default function Survey() {
         winner,
       };
 
-      // localStorage fallback
-      try {
-        const prevRaw = localStorage.getItem("popmatch_survey");
-        const prev = prevRaw ? JSON.parse(prevRaw) : [];
-        prev.push(payload);
-        localStorage.setItem("popmatch_survey", JSON.stringify(prev));
-      } catch {}
-
-      // Try Supabase first (if configured)
-      try {
-        // Lazy import helper to avoid bundling when not configured
-        const mod = await import("@/lib/supabase");
-        if (mod && typeof mod.insertResultSupabase === "function") {
-          mod.insertResultSupabase(payload).catch(() => {});
-        } else {
-          // Fallback to server endpoint
-          fetch("/api/stats", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          }).catch(() => {});
-        }
-      } catch (e) {
-        // final fallback
-        fetch("/api/stats", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }).catch(() => {});
-      }
+      // Send to server
+      fetch("/api/stats", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }).catch(() => {});
     } catch {}
 
     setResult(winner);
