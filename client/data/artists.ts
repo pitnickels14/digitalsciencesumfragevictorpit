@@ -1,4 +1,4 @@
-export type ArtistKey = "taylor" | "sabrina" | "billie" | "weeknd";
+export type ArtistKey = "taylor" | "sabrina" | "billie" | "laufey";
 
 export const ARTIST_INFO: Record<ArtistKey, { name: string; desc: string }> = {
   taylor: {
@@ -13,8 +13,8 @@ export const ARTIST_INFO: Record<ArtistKey, { name: string; desc: string }> = {
     name: "Billie Eilish",
     desc: "Atmosphärisch, intim und experimentell – für alle, die es düster und subtil lieben.",
   },
-  weeknd: {
-    name: "The Weeknd",
-    desc: "Mitternachts-Vibes zwischen Synthwave und R&B – dunkel, elegant, hypnotisch.",
+  laufey: {
+    name: "Laufey",
+    desc: "Orchestrale Pop-Experimente mit klassischen Einflüssen – elegant, emotiv und innovativ.",
   },
 };
