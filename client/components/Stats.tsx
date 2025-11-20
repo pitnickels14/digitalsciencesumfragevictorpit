@@ -75,12 +75,7 @@ export default function Stats({ className }: { className?: string }) {
           className="text-xs text-white/70 underline"
           onClick={async () => {
             try {
-              const supa = await import('@/lib/supabase').catch(() => null);
-              if (supa && typeof supa.clearResultsSupabase === 'function') {
-                await supa.clearResultsSupabase();
-              } else {
-                await fetch('/api/stats', { method: 'DELETE' });
-              }
+              await fetch('/api/stats', { method: 'DELETE' });
             } catch {}
             setData({ taylor: 0, sabrina: 0, billie: 0, weeknd: 0 });
           }}
