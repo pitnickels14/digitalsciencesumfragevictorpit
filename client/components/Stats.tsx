@@ -75,7 +75,7 @@ export default function Stats({ className }: { className?: string }) {
           className="text-xs text-white/70 underline"
           onClick={async () => {
             try {
-              await fetch('/api/stats', { method: 'DELETE' });
+              await fetch("/api/stats", { method: "DELETE" });
             } catch {}
             setData({ taylor: 0, sabrina: 0, billie: 0, weeknd: 0 });
           }}

@@ -1,0 +1,17 @@
+{
+  "results": [
+    {
+      "id": 3,
+      "ts": 1763652030530,
+      "winner": "sabrina",
+      "scores": {
+        "taylor": 3,
+        "sabrina": 4,
+        "billie": 0,
+        "weeknd": 1
+      },
+      "payload": null
+    }
+  ],
+  "nextId": 4
+}
