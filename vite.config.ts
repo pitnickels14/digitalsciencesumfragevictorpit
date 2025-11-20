@@ -4,11 +4,21 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => {
-  const plugins = [react()];
+  const plugins: Plugin[] = [react()];
 
   // Only include express plugin during development
   if (command === "serve") {
-    plugins.push(expressPlugin());
+    plugins.push({
+      name: "express-plugin",
+      configureServer(server) {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const { createServer } = require("./server/index.ts");
+        const app = createServer();
+
+        // Add Express app as middleware to Vite dev server
+        server.middlewares.use(app);
+      },
+    } as Plugin);
   }
 
   return {
@@ -32,17 +42,3 @@ export default defineConfig(({ command }) => {
     },
   };
 });
-
-function expressPlugin(): Plugin {
-  return {
-    name: "express-plugin",
-    configureServer(server) {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { createServer } = require("./server/index.ts");
-      const app = createServer();
-
-      // Add Express app as middleware to Vite dev server
-      server.middlewares.use(app);
-    },
-  };
-}
